@@ -1,7 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AuthLogin from '@/components/auth/AuthLogin.vue'
+</script>
 
 <template>
-  <div>Hello World</div>
+  <div class="app-ctn">
+    <AuthLogin />
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app-ctn {
+  height: 100%;
+}
+</style>
