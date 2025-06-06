@@ -1,22 +1,36 @@
 <script setup lang="ts">
 import bgImage from '+/img/auth_background.jpg'
-import { reactive } from 'vue'
-import { h } from 'vue'
+import { reactive, h, inject, ref } from 'vue'
 import { GoogleOutlined } from '@ant-design/icons-vue'
+import type { Gc as IGc } from '#/Gc'
+import type { i_login } from '#/types/auth_types'
+const Gc = inject('Gc') as typeof IGc
+const { log_in } = Gc['auth']
 
-interface FormState {
-  email: string
-  password: string
-  remember: boolean
-}
+const isLoading = ref<boolean>(false)
 
-const formState = reactive<FormState>({
+const formData = reactive<i_login>({
   email: '',
   password: '',
-  remember: true,
 })
-const onFinish = (values: any): void => {
-  console.log('Success:', values)
+
+const reset = (): void => {
+  formData.email = ''
+  formData.password = ''
+}
+
+const onFinish = async (values: i_login): Promise<void> => {
+  try {
+    isLoading.value = true
+    await log_in(values)
+    reset()
+  } catch (e) {
+    console.log(e)
+  } finally {
+    setTimeout(() => {
+      isLoading.value = false
+    }, 500)
+  }
 }
 
 const onFinishFailed = (errorInfo: any): void => {
@@ -35,7 +49,7 @@ const onFinishFailed = (errorInfo: any): void => {
           <a-typography-title :level="2">Login</a-typography-title>
           <a-form
             class="login-form"
-            :model="formState"
+            :model="formData"
             name="basic"
             autocomplete="off"
             @finish="onFinish"
@@ -50,15 +64,22 @@ const onFinishFailed = (errorInfo: any): void => {
                 { type: 'email', message: 'The input is not valid E-mail!' },
               ]"
             >
-              <a-input v-model:value="formState.email" />
+              <a-input v-model:value="formData.email" />
             </a-form-item>
 
             <a-form-item
               label="Password"
               name="password"
-              :rules="[{ required: true, message: 'Please input your password!' }]"
+              :rules="[
+                { required: true, message: 'Please input your password!' },
+                {
+                  pattern: /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                  message:
+                    'Password must be at least 8 characters and include both uppercase and lowercase letters.',
+                },
+              ]"
             >
-              <a-input-password v-model:value="formState.password" />
+              <a-input-password v-model:value="formData.password" />
             </a-form-item>
 
             <div class="forgot-pw">
@@ -74,7 +95,9 @@ const onFinishFailed = (errorInfo: any): void => {
             </div>
 
             <a-form-item>
-              <a-button type="primary" html-type="submit" style="width: 100%">Submit</a-button>
+              <a-button type="primary" html-type="submit" style="width: 100%" :loading="isLoading"
+                >Submit</a-button
+              >
             </a-form-item>
           </a-form>
           <a-typography-title :level="5">Or using</a-typography-title>

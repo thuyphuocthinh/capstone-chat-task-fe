@@ -21,6 +21,10 @@ export interface i_otp {
   otp: string;
 }
 
+export interface i_forgot_password {
+  email: string;
+}
+
 export interface i_reset_password {
   password: string;
   confirmPassword: string;

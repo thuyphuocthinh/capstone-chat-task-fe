@@ -1,36 +1,29 @@
 <script setup lang="ts">
 import bgImage from '+/img/auth_background.jpg'
-import { reactive, inject, ref } from 'vue'
-import type { i_register } from '#/types/auth_types'
+import { reactive, h, inject, ref } from 'vue'
 import type { Gc as IGc } from '#/Gc'
-import { set_noti_mess } from '@/core/stores/noti_store'
+import type { i_reset_password } from '#/types/auth_types'
 const Gc = inject('Gc') as typeof IGc
-const { register_api } = Gc['services']['auth_services']
+const { reset_password_api } = Gc['services']['auth_services']
 
 const isLoading = ref<boolean>(false)
 
-const formState = reactive<i_register>({
-  email: '',
+const formData = reactive<i_reset_password>({
+  confirmPassword: '',
   password: '',
-  firstName: '',
-  lastName: '',
+  email: '',
 })
 
 const reset = (): void => {
-  formState.email = ''
-  formState.firstName = ''
-  formState.lastName = ''
-  formState.password = ''
+  formData.email = ''
+  formData.password = ''
+  formData.confirmPassword = ''
 }
 
-const onFinish = async (values: i_register): Promise<void> => {
-  isLoading.value = true
+const onFinish = async (values: i_reset_password): Promise<void> => {
   try {
-    const res = await register_api(values)
-    set_noti_mess({
-      error: false,
-      message: res.message,
-    })
+    isLoading.value = true
+    await reset_password_api(values)
     reset()
   } catch (e) {
     console.log(e)
@@ -44,6 +37,13 @@ const onFinish = async (values: i_register): Promise<void> => {
 const onFinishFailed = (errorInfo: any): void => {
   console.log('Failed:', errorInfo)
 }
+
+const validateConfirmPassword = (_: any, value: string) => {
+  if (!value || value === formData.password) {
+    return Promise.resolve()
+  }
+  return Promise.reject(new Error('Passwords do not match!'))
+}
 </script>
 
 <template>
@@ -54,27 +54,16 @@ const onFinishFailed = (errorInfo: any): void => {
       </a-layout-sider>
       <a-layout class="layout-right" width="40%">
         <a-layout-content class="login-ctn">
-          <a-typography-title :level="2">Register</a-typography-title>
+          <a-typography-title :level="2">Reset Password</a-typography-title>
           <a-form
             class="login-form"
-            :model="formState"
+            :model="formData"
             name="basic"
             autocomplete="off"
             @finish="onFinish"
             @finishFailed="onFinishFailed"
             layout="vertical"
           >
-            <a-form-item
-              label="Email"
-              name="email"
-              :rules="[
-                { required: true, message: 'Please input your email!' },
-                { type: 'email', message: 'The input is not valid E-mail!' },
-              ]"
-            >
-              <a-input v-model:value="formState.email" />
-            </a-form-item>
-
             <a-form-item
               label="Password"
               name="password"
@@ -87,28 +76,31 @@ const onFinishFailed = (errorInfo: any): void => {
                 },
               ]"
             >
-              <a-input-password v-model:value="formState.password" />
+              <a-input-password v-model:value="formData.password" />
             </a-form-item>
 
             <a-form-item
-              label="First name"
-              name="firstName"
-              :rules="[{ required: true, message: 'Please input your firstname!' }]"
+              label="Confirm password"
+              name="confirmPassword"
+              :rules="[
+                { required: true, message: 'Please confirm your password!' },
+                {
+                  validator: validateConfirmPassword,
+                },
+              ]"
             >
-              <a-input v-model:value="formState.firstName" />
-            </a-form-item>
-
-            <a-form-item
-              label="Last name"
-              name="lastName"
-              :rules="[{ required: true, message: 'Please input your lastname!' }]"
-            >
-              <a-input v-model:value="formState.lastName" />
+              <a-input-password v-model:value="formData.confirmPassword" />
             </a-form-item>
 
             <div class="forgot-pw">
               <a-form-item>
-                <router-link to="/login" class="login-form-forgot">Login</router-link>
+                <router-link to="/register" class="login-form-forgot">Register</router-link>
+              </a-form-item>
+
+              <a-form-item>
+                <router-link to="/forgot-password" class="login-form-forgot"
+                  >Forgot password</router-link
+                >
               </a-form-item>
             </div>
 
@@ -162,7 +154,7 @@ const onFinishFailed = (errorInfo: any): void => {
 .forgot-pw {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
 }
 

@@ -1,3 +1,5 @@
+import type { i_status_response } from ".";
+
 export type ROLE = "MEMBER" | "ADMIN";
 
 export interface i_user {
@@ -8,4 +10,9 @@ export interface i_user {
   avatar?: string;
   role: ROLE;
   status: string;
+}
+
+
+export interface i_status_user_response extends i_status_response {
+  data: i_user;
 }

@@ -1,22 +1,33 @@
 <script setup lang="ts">
 import bgImage from '+/img/auth_background.jpg'
-import { reactive } from 'vue'
-import { h } from 'vue'
-import { GoogleOutlined } from '@ant-design/icons-vue'
+import { reactive, inject, ref } from 'vue'
+import type { i_forgot_password } from '#/types/auth_types'
+import type { Gc as IGc } from '#/Gc'
+import { set_noti_mess } from '@/core/stores/noti_store'
+const Gc = inject('Gc') as typeof IGc
+const { forgot_password_api } = Gc['services']['auth_services']
 
-interface FormState {
-  email: string
-  password: string
-  remember: boolean
-}
-
-const formState = reactive<FormState>({
+const formState = reactive<i_forgot_password>({
   email: '',
-  password: '',
-  remember: true,
 })
-const onFinish = (values: any): void => {
-  console.log('Success:', values)
+
+const isLoading = ref<boolean>(false)
+
+const onFinish = async (values: i_forgot_password): Promise<void> => {
+  try {
+    isLoading.value = true
+    const res = await forgot_password_api(values)
+    set_noti_mess({
+      error: false,
+      message: res.message,
+    })
+  } catch (e) {
+    console.log(e)
+  } finally {
+    setTimeout(() => {
+      isLoading.value = false
+    }, 500)
+  }
 }
 
 const onFinishFailed = (errorInfo: any): void => {
@@ -64,7 +75,9 @@ const onFinishFailed = (errorInfo: any): void => {
             </div>
 
             <a-form-item>
-              <a-button type="primary" html-type="submit" style="width: 100%">Submit</a-button>
+              <a-button type="primary" html-type="submit" style="width: 100%" :loading="isLoading"
+                >Submit</a-button
+              >
             </a-form-item>
           </a-form>
         </a-layout-content>

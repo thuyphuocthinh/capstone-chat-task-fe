@@ -18,6 +18,16 @@ const router = createRouter({
       path: "/forgot-password",
       name: "forgot-password",
       component: (): Component => import("@/components/auth").then((modules) => modules.ForgotPassword)
+    },
+    {
+      path: "/verify-otp",
+      name: "verify-otp",
+      component: (): Component => import("@/components/auth").then((modules) => modules.VefifyOtp)
+    },
+    {
+      path: "/reset-password",
+      name: "reset-password",
+      component: (): Component => import("@/components/auth").then((modules) => modules.ResetPassword)
     }
   ],
 })

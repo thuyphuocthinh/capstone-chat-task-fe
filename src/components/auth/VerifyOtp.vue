@@ -1,37 +1,26 @@
 <script setup lang="ts">
 import bgImage from '+/img/auth_background.jpg'
 import { reactive, inject, ref } from 'vue'
-import type { i_register } from '#/types/auth_types'
+import type { i_otp } from '#/types/auth_types'
 import type { Gc as IGc } from '#/Gc'
 import { set_noti_mess } from '@/core/stores/noti_store'
 const Gc = inject('Gc') as typeof IGc
-const { register_api } = Gc['services']['auth_services']
+const { verify_otp_api } = Gc['services']['auth_services']
+
+const formState = reactive<i_otp>({
+  otp: '',
+})
 
 const isLoading = ref<boolean>(false)
 
-const formState = reactive<i_register>({
-  email: '',
-  password: '',
-  firstName: '',
-  lastName: '',
-})
-
-const reset = (): void => {
-  formState.email = ''
-  formState.firstName = ''
-  formState.lastName = ''
-  formState.password = ''
-}
-
-const onFinish = async (values: i_register): Promise<void> => {
-  isLoading.value = true
+const onFinish = async (values: i_otp): Promise<void> => {
   try {
-    const res = await register_api(values)
+    isLoading.value = true
+    const res = await verify_otp_api(values)
     set_noti_mess({
       error: false,
       message: res.message,
     })
-    reset()
   } catch (e) {
     console.log(e)
   } finally {
@@ -54,7 +43,7 @@ const onFinishFailed = (errorInfo: any): void => {
       </a-layout-sider>
       <a-layout class="layout-right" width="40%">
         <a-layout-content class="login-ctn">
-          <a-typography-title :level="2">Register</a-typography-title>
+          <a-typography-title :level="2">Verify OTP</a-typography-title>
           <a-form
             class="login-form"
             :model="formState"
@@ -65,48 +54,18 @@ const onFinishFailed = (errorInfo: any): void => {
             layout="vertical"
           >
             <a-form-item
-              label="Email"
-              name="email"
-              :rules="[
-                { required: true, message: 'Please input your email!' },
-                { type: 'email', message: 'The input is not valid E-mail!' },
-              ]"
+              label="OTP"
+              name="otp"
+              :rules="[{ required: true, message: 'Please input otp!' }]"
             >
-              <a-input v-model:value="formState.email" />
-            </a-form-item>
-
-            <a-form-item
-              label="Password"
-              name="password"
-              :rules="[
-                { required: true, message: 'Please input your password!' },
-                {
-                  pattern: /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
-                  message:
-                    'Password must be at least 8 characters and include both uppercase and lowercase letters.',
-                },
-              ]"
-            >
-              <a-input-password v-model:value="formState.password" />
-            </a-form-item>
-
-            <a-form-item
-              label="First name"
-              name="firstName"
-              :rules="[{ required: true, message: 'Please input your firstname!' }]"
-            >
-              <a-input v-model:value="formState.firstName" />
-            </a-form-item>
-
-            <a-form-item
-              label="Last name"
-              name="lastName"
-              :rules="[{ required: true, message: 'Please input your lastname!' }]"
-            >
-              <a-input v-model:value="formState.lastName" />
+              <a-input v-model:value="formState.otp" />
             </a-form-item>
 
             <div class="forgot-pw">
+              <a-form-item>
+                <router-link to="/register" class="login-form-forgot">Register</router-link>
+              </a-form-item>
+
               <a-form-item>
                 <router-link to="/login" class="login-form-forgot">Login</router-link>
               </a-form-item>
@@ -162,7 +121,7 @@ const onFinishFailed = (errorInfo: any): void => {
 .forgot-pw {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
 }
 
