@@ -4,7 +4,7 @@ import AuthLogin from '@/components/auth/AuthLogin.vue'
 
 <template>
   <div class="app-ctn">
-    <AuthLogin />
+    <router-view></router-view>
   </div>
 </template>
 

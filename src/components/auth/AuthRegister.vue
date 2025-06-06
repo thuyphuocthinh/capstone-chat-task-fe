@@ -32,7 +32,7 @@ const onFinishFailed = (errorInfo: any): void => {
       </a-layout-sider>
       <a-layout class="layout-right" width="40%">
         <a-layout-content class="login-ctn">
-          <a-typography-title :level="2">Login</a-typography-title>
+          <a-typography-title :level="2">Register</a-typography-title>
           <a-form
             class="login-form"
             :model="formState"
@@ -61,15 +61,25 @@ const onFinishFailed = (errorInfo: any): void => {
               <a-input-password v-model:value="formState.password" />
             </a-form-item>
 
+            <a-form-item
+              label="First name"
+              name="firstname"
+              :rules="[{ required: true, message: 'Please input your firstname!' }]"
+            >
+              <a-input v-model:value="formState.email" />
+            </a-form-item>
+
+            <a-form-item
+              label="Last name"
+              name="lastname"
+              :rules="[{ required: true, message: 'Please input your lastname!' }]"
+            >
+              <a-input v-model:value="formState.email" />
+            </a-form-item>
+
             <div class="forgot-pw">
               <a-form-item>
-                <router-link to="/register" class="login-form-forgot">Register</router-link>
-              </a-form-item>
-
-              <a-form-item>
-                <router-link to="/forgot-password" class="login-form-forgot"
-                  >Forgot password</router-link
-                >
+                <router-link to="/login" class="login-form-forgot">Login</router-link>
               </a-form-item>
             </div>
 
@@ -77,8 +87,6 @@ const onFinishFailed = (errorInfo: any): void => {
               <a-button type="primary" html-type="submit" style="width: 100%">Submit</a-button>
             </a-form-item>
           </a-form>
-          <a-typography-title :level="5">Or using</a-typography-title>
-          <a-button :icon="h(GoogleOutlined)" class="google-btn">Google</a-button>
         </a-layout-content>
       </a-layout>
     </a-layout>
@@ -123,7 +131,7 @@ const onFinishFailed = (errorInfo: any): void => {
 .forgot-pw {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   width: 100%;
 }
 
