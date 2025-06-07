@@ -6,6 +6,9 @@ import type { Gc as IGc } from '#/Gc'
 import { set_noti_mess } from '#/stores/noti_store'
 const Gc = inject('Gc') as typeof IGc
 const { forgot_password_api } = Gc['services']['auth_services']
+const { useRouter } = Gc['router']
+
+const router = useRouter()
 
 const formState = reactive<i_forgot_password>({
   email: '',
@@ -21,6 +24,7 @@ const onFinish = async (values: i_forgot_password): Promise<void> => {
       error: false,
       message: res.message,
     })
+    router.push('/verify-otp')
   } catch (e) {
     console.log(e)
   } finally {

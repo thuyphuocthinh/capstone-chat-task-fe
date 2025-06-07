@@ -115,4 +115,7 @@ const onFinishFailed = (errorInfo: any): void => {
 
 <style scoped>
 @import '+/css/auth.css';
+.forgot-pw {
+  justify-content: flex-end;
+}
 </style>

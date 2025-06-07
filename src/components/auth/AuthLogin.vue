@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { reactive, h, inject, ref } from 'vue'
+import { reactive, inject, ref } from 'vue'
 import type { Gc as IGc } from '#/Gc'
 import type { i_login } from '#/types/auth_types'
 const Gc = inject('Gc') as typeof IGc
-const { log_in } = Gc['auth']
+const { log_in, google_log_in } = Gc['auth']
 const { useRouter } = Gc['router']
+import type { i_google_login_credentials } from '#/types/auth_types'
 
 const router = useRouter()
 const isLoading = ref<boolean>(false)
@@ -39,7 +40,16 @@ const onFinishFailed = (errorInfo: any): void => {
 }
 
 /** Google Login */
-const handleGoogleCallback = (): void => {}
+const handleGoogleCallback = async (response: i_google_login_credentials): Promise<void> => {
+  try {
+    await google_log_in({
+      token: response.credential,
+    })
+    router.push('/test-workspace')
+  } catch (e) {
+    console.log(e)
+  }
+}
 /** Google Login */
 </script>
 

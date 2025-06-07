@@ -98,7 +98,7 @@ const list_tabs = ref<Array<i_tab>>([
   text-align: center;
   gap: var(--space-xs);
   color: var(--color-black);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 12px;
 }
 

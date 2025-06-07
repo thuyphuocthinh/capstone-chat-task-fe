@@ -1,6 +1,7 @@
 import { set_noti_mess } from "#/stores/noti_store";
 
 export * as auth_services from "./auth_services";
+export * as base_service from "./base"
 
 export const error_services = (error: string): void => {
 	set_noti_mess({

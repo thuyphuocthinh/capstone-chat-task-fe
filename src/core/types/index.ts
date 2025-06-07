@@ -3,6 +3,7 @@ export interface metadata {
   currentPage: number;
   totalPages: number;
   totalElements: number;
+  pageSize: number;
 }
 
 export interface i_status_response {
@@ -18,3 +19,4 @@ export interface i_status_data_response extends i_status_response{
 }
 
 export * as auth_type from "./auth_types";
+export * as workspace_types from "./workspace_types"

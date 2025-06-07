@@ -7,6 +7,10 @@ import { set_noti_mess } from '#/stores/noti_store'
 const Gc = inject('Gc') as typeof IGc
 const { verify_otp_api } = Gc['services']['auth_services']
 
+const { useRouter } = Gc['router']
+
+const router = useRouter()
+
 const formState = reactive<i_otp>({
   otp: '',
 })
@@ -19,8 +23,13 @@ const onFinish = async (values: i_otp): Promise<void> => {
     const res = await verify_otp_api(values)
     set_noti_mess({
       error: false,
-      message: res.message,
+      message: 'Verified successfully',
     })
+
+    localStorage.setItem('email', res.data.email)
+    setTimeout(() => {
+      router.push('/reset-password')
+    }, 500)
   } catch (e) {
     console.log(e)
   } finally {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import bgImage from '+/img/auth_background.jpg'
-import { reactive, h, inject, ref } from 'vue'
+import { reactive, h, inject, ref, onMounted } from 'vue'
 import type { Gc as IGc } from '#/Gc'
 import type { i_reset_password } from '#/types/auth_types'
+import { set_noti_mess } from '#/stores/noti_store'
+
 const Gc = inject('Gc') as typeof IGc
 const { reset_password_api } = Gc['services']['auth_services']
 
@@ -22,9 +23,17 @@ const reset = (): void => {
 
 const onFinish = async (values: i_reset_password): Promise<void> => {
   try {
+    values.email = formData.email
     isLoading.value = true
-    await reset_password_api(values)
+    const res = await reset_password_api(values)
     reset()
+    set_noti_mess({
+      error: false,
+      message: res.message,
+    })
+    if (localStorage.getItem('email')) {
+      localStorage.removeItem('email')
+    }
   } catch (e) {
     console.log(e)
   } finally {
@@ -44,6 +53,13 @@ const validateConfirmPassword = (_: any, value: string) => {
   }
   return Promise.reject(new Error('Passwords do not match!'))
 }
+
+onMounted(() => {
+  const email: string | null = localStorage.getItem('email')
+  if (email) {
+    formData.email = email
+  }
+})
 </script>
 
 <template>

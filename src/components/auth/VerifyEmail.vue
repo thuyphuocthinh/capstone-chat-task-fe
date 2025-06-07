@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import bgImage from '+/img/auth_background.jpg'
-import { computed, h, inject, onBeforeMount, ref } from 'vue'
+import { computed, h, inject, onMounted, ref } from 'vue'
 import type { Gc as IGc } from '#/Gc'
 const Gc = inject('Gc') as typeof IGc
 const { verify_register_email_api } = Gc['services']['auth_services']
@@ -9,12 +9,12 @@ const route = useRoute()
 const router = useRouter()
 const isVerified = ref<boolean>(false)
 
-const email = computed(() => String(route.params.email))
+const otp = computed(() => String(route.query.otp))
 
 const handle_verify = async (): Promise<void> => {
   try {
-    if (email.value) {
-      await verify_register_email_api(email.value)
+    if (otp.value) {
+      await verify_register_email_api(otp.value)
       isVerified.value = true
     }
   } catch (e) {
@@ -31,7 +31,7 @@ const to_login = (): void => {
   router.push('/login')
 }
 
-onBeforeMount(async () => {
+onMounted(async () => {
   await handle_verify()
 })
 </script>

@@ -35,10 +35,27 @@ export interface i_logout {
   refreshToken: string;
 }
 
+export interface i_google_login {
+  token: string;
+}
+
+export interface i_google_login_credentials {
+  clientId: string;
+  client_id: string;
+  credential: string;
+  select_by: string
+}
+
 export interface i_login_response extends i_status_response {
   data: {
     refreshToken: string;
     accessToken: string;
+  }
+}
+
+export interface i_verify_otp_response extends i_status_response {
+  data: {
+    email: string;
   }
 }
 

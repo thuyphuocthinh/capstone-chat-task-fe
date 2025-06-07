@@ -1,7 +1,7 @@
 import { computed } from "vue";
 import { auth_store } from "#/stores/auth_store";
-import { login_api, logout_api } from "#/services/auth_services";
-import type { i_login, i_logout } from "#/types/auth_types";
+import { login_api, logout_api, google_login_api } from "#/services/auth_services";
+import type { i_login, i_logout, i_google_login } from "#/types/auth_types";
 import { get_profile_api } from "#/services/user_services";
 import { clear_data_stores } from "#/stores";
 
@@ -14,6 +14,27 @@ export const auth_logged_in = computed(() => {
 export const log_in = async (data: i_login): Promise<void> => {
   try {
     await login_api(data).then(async (res) => {
+
+      const accessToken = "Bearer " + res["data"].accessToken;
+      const refreshToken = res["data"].refreshToken;
+
+      auth_store.value.access_token = accessToken;
+      auth_store.value.refresh_token = refreshToken;
+
+      try {
+        await fetch_user_profile();
+      } catch (e) {
+        console.log(e)
+      }
+    })
+  } catch (e) {
+    throw e
+  }
+}
+
+export const google_log_in = async (data: i_google_login): Promise<void> => {
+  try {
+    await google_login_api(data).then(async (res) => {
 
       const accessToken = "Bearer " + res["data"].accessToken;
       const refreshToken = res["data"].refreshToken;
