@@ -8,6 +8,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from '#/router'
 import { SetupGc } from "#/Gc";
+import vue3GoogleLogin from 'vue3-google-login'
 
 declare global {
 	interface Window {
@@ -25,6 +26,9 @@ const init_app = async (): Promise<void> => {
   app.use(createPinia())
   app.use(router)
   app.use(SetupGc);
+  app.use(vue3GoogleLogin, {
+    clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID
+  })
   app.mount('#app')
 }
 

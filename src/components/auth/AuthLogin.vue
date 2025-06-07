@@ -36,6 +36,10 @@ const onFinish = async (values: i_login): Promise<void> => {
 const onFinishFailed = (errorInfo: any): void => {
   console.log('Failed:', errorInfo)
 }
+
+/** Google Login */
+const handleGoogleCallback = (): void => {}
+/** Google Login */
 </script>
 
 <template>
@@ -101,7 +105,7 @@ const onFinishFailed = (errorInfo: any): void => {
             </a-form-item>
           </a-form>
           <a-typography-title :level="5">Or using</a-typography-title>
-          <a-button :icon="h(GoogleOutlined)" class="google-btn">Google</a-button>
+          <GoogleLogin :callback="handleGoogleCallback" />
         </a-layout-content>
       </a-layout>
     </a-layout>

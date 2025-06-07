@@ -63,6 +63,16 @@ export const verify_otp_api = async (data: i_otp): Promise<i_status_message_resp
   }
 }
 
+export const verify_register_email_api = async (email: string): Promise<i_status_message_response> => {
+   const url = `/auth/verify-email?email=${email}`;
+  try {
+    return await authHttp.get(url);
+  } catch (e: any) {
+    error_services(e.message);
+    throw e
+  }
+}
+
 export const reset_password_api = async (data: i_reset_password): Promise<i_status_message_response> => {
    const url = "/auth/reset-password";
   try {
