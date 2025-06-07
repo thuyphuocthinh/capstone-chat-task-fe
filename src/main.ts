@@ -11,6 +11,8 @@ import { SetupGc } from "#/Gc";
 import vue3GoogleLogin from 'vue3-google-login'
 import { fetch_user_profile } from "#/auth";
 
+import { init_data_stores } from "#/stores";
+
 declare global {
 	interface Window {
 		_Gc_?: () => any;
@@ -23,6 +25,12 @@ const init_app = async (): Promise<void> => {
     await fetch_user_profile();
   } catch (e) {
     console.log(e);
+  }
+
+  try {
+    await init_data_stores();
+  } catch (e) {
+    console.log(e)
   }
 
   const app = createApp(App)

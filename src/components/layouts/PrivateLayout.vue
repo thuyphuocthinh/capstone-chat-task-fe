@@ -3,10 +3,15 @@
     <NavBarLayout></NavBarLayout>
     <a-layout-content>
       <div class="content-layout">
-        <div class="content-left">
+        <div class="content-left" v-if="route.name !== 'workspace'">
           <TabLeftLayout></TabLeftLayout>
         </div>
-        <div class="content-right">
+        <div
+          class="content-right"
+          :class="{
+            'content-right--workspace': route.name === 'workspace',
+          }"
+        >
           <router-view></router-view>
         </div>
       </div>
@@ -42,5 +47,9 @@ const route = useRoute()
 
 .content-right {
   width: calc(100vw - 82px);
+}
+
+.content-right--workspace {
+  width: 100vw;
 }
 </style>

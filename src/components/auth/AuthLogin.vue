@@ -25,7 +25,7 @@ const onFinish = async (values: i_login): Promise<void> => {
     isLoading.value = true
     await log_in(values)
     reset()
-    router.push('/test-workspace')
+    router.push('/workspaces')
   } catch (e) {
     console.log(e)
   } finally {

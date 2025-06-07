@@ -41,9 +41,9 @@ const router = createRouter({
     },
 
     {
-      path: "/test-workspace",
+      path: "/workspaces",
       name: "workspace",
-      component: import("@/workspaces").then((modules) => modules.TestWorkspace)
+      component: import("@/workspaces").then((modules) => modules.WorkspacePage)
     }
   ],
 })
