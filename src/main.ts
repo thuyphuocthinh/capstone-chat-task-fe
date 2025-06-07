@@ -1,4 +1,4 @@
-import "@/assets/css/base.css";
+import "+/css/base.css";
 import Antd from 'ant-design-vue';
 import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
@@ -9,6 +9,7 @@ import App from './App.vue'
 import router from '#/router'
 import { SetupGc } from "#/Gc";
 import vue3GoogleLogin from 'vue3-google-login'
+import { fetch_user_profile } from "#/auth";
 
 declare global {
 	interface Window {
@@ -18,6 +19,12 @@ declare global {
 
 
 const init_app = async (): Promise<void> => {
+  try {
+    await fetch_user_profile();
+  } catch (e) {
+    console.log(e);
+  }
+
   const app = createApp(App)
   app.use(Antd);
   app.use(Vue3Toastify, {
