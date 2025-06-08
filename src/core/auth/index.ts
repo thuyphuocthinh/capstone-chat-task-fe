@@ -3,7 +3,7 @@ import { auth_store } from "#/stores/auth_store";
 import { login_api, logout_api, google_login_api } from "#/services/auth_services";
 import type { i_login, i_logout, i_google_login } from "#/types/auth_types";
 import { get_profile_api } from "#/services/user_services";
-import { clear_data_stores } from "#/stores";
+import { clear_data_stores, init_loggined_data_stores } from "#/stores";
 
 // check user_loggined ?
 export const auth_logged_in = computed(() => {
@@ -57,9 +57,23 @@ export const google_log_in = async (data: i_google_login): Promise<void> => {
 export const fetch_user_profile = async (): Promise<void> => {
   try {
     if(auth_store.value.access_token) {
-      const res = await get_profile_api();
-      auth_store.value.user = res["data"];
-      auth_store.value.logged_in = true;
+      await get_profile_api()
+        .then((res) => {
+          auth_store.value.user = res["data"];
+          auth_store.value.logged_in = true;
+        })
+        .catch(async (e) => {
+          await log_out();
+          console.log(e)
+        })
+    }
+  } catch (e) {
+    console.log(e)
+  }
+
+  try {
+    if(auth_store.value.logged_in) {
+      await init_loggined_data_stores();
     }
   } catch (e) {
     console.log(e)

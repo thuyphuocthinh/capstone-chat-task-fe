@@ -1,6 +1,6 @@
 import type { i_status_response, metadata } from ".";
 
-export type WORKSPACE_USER_ROLE = "HOST" | "MODERATOR" | "MEMBER";
+export type WORKSPACE_MEMBER_ROLE = "HOST" | "MODERATOR" | "MEMBER";
 
 export interface i_member_workspace {
   id: string;
@@ -28,18 +28,19 @@ export interface i_update_workspace {
 
 export interface i_add_member_workspace {
   userId: string;
-  role: WORKSPACE_USER_ROLE
+  role: WORKSPACE_MEMBER_ROLE
 }
 
 export interface i_change_role_workspace {
-  role: WORKSPACE_USER_ROLE
+  role: WORKSPACE_MEMBER_ROLE
 }
 
 export interface i_workspace_detail_response extends i_status_response {
   data: i_workspace
 }
 
-export interface i_workspaces_response extends i_status_response, metadata {
-  data: i_workspace
+export interface i_workspaces_response extends i_status_response {
+  data: Array<i_workspace>;
+  metadata: metadata
 }
 

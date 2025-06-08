@@ -2,6 +2,7 @@ import * as types from "./types";
 import * as services from "./services";
 import * as stores from "./stores";
 import * as auth from "./auth";
+import * as modules from "./modules"
 import type { App } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
@@ -10,6 +11,7 @@ export const Gc = {
   types,
   services,
   stores,
+  modules,
   router: {
 		useRouter: useRouter,
 		useRoute: useRoute

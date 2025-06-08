@@ -10,7 +10,7 @@ const instance = axios.create({
 })
 
 instance.interceptors.response.use(
-  response => response.data,
+  response => response,
   error => {
     if (error.response && error.response.data) {
       return Promise.reject(error.response.data)

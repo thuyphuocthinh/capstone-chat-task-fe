@@ -3,10 +3,7 @@ import type {
   i_create_workspace,
   i_update_workspace,
   i_add_member_workspace,
-  i_workspace,
   i_workspace_detail_response,
-  WORKSPACE_USER_ROLE,
-  i_member_workspace,
   i_workspaces_response
 } from "#/types/workspace_types"
 
