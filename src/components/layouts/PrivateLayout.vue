@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { NavBarLayout, TabLeftLayout } from '.'
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import type { Gc as IGc } from '#/Gc'
 const Gc = inject('Gc') as typeof IGc
 

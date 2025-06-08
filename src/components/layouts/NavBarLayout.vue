@@ -24,7 +24,7 @@
                   <div class="dropdown-menu__welcome">
                     Hi, {{ auth_store.user?.firstName + ' ' + auth_store.user?.lastName }}
                   </div>
-                  <a-menu-item>
+                  <a-menu-item @click="setShowPopUp">
                     <a href="javascript:;">Profile</a>
                   </a-menu-item>
                   <a-menu-item @click="showLogoutConfirm">
@@ -37,6 +37,16 @@
         </a-avatar>
       </div>
     </div>
+
+    <PopupContainer
+      v-if="isShowPopUp"
+      :width="700"
+      title="Profile"
+      :footer="false"
+      :cancelFunc="setHidePopUp"
+    >
+      <ProfileTabs />
+    </PopupContainer>
   </div>
 </template>
 
@@ -44,8 +54,10 @@
 import { UserOutlined } from '@ant-design/icons-vue'
 import { auth_store } from '#/stores/auth_store'
 import { log_out } from '#/auth'
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import type { Gc as IGc } from '#/Gc'
+import { PopupContainer } from '@/common'
+import { ProfileTabs } from '@/profiles'
 
 const Gc = inject('Gc') as typeof IGc
 const { useConfirm } = Gc['modules']['modal_confirm']
@@ -62,6 +74,14 @@ const showLogoutConfirm = (): void => {
     },
     isDanger: true,
   })
+}
+
+const isShowPopUp = ref<boolean>(false)
+const setShowPopUp = (): void => {
+  isShowPopUp.value = true
+}
+const setHidePopUp = (): void => {
+  isShowPopUp.value = false
 }
 </script>
 
