@@ -17,7 +17,7 @@ export const get_list_workspaces_api = async (page: number = 1, paging: number =
     try {
       return await http.get(url);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }
@@ -27,7 +27,7 @@ export const find_workspaces_api = async (name: string = "", page: number = 1, p
     try {
       return await http.get(url);
     } catch (e: any) {
-      error_services(e.message);
+     error_services(e.response?.data.message);
       throw e
     }
 }
@@ -37,7 +37,7 @@ export const create_workspace_api = async (data: i_create_workspace): Promise<i_
     try {
       return await http.post(url, data);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }
@@ -48,7 +48,7 @@ export const update_workspace_api = async (id: string, data: i_update_workspace)
     try {
       return await http.patch(url, data);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }
@@ -58,7 +58,7 @@ export const add_member_workspace_api = async (id: string, data: i_add_member_wo
     try {
       return await http.post(url, data);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }
@@ -68,7 +68,7 @@ export const remove_member_workspace_api = async (workspaceId: string, memberId:
     try {
       return await http.delete(url);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }
@@ -78,7 +78,7 @@ export const change_role_member_workspace_api = async (workspaceId: string, memb
     try {
       return await http.patch(url, data);
     } catch (e: any) {
-      error_services(e.message);
+      error_services(e.response?.data.message);
       throw e
     }
 }

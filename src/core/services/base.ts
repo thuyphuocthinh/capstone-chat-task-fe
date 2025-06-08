@@ -1,5 +1,8 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { get_token_storage, KEY_LOCALSTORAGE, auth_store } from '#/stores/auth_store'
+import { refresh_token_api } from './auth_services'
+
+// private instance
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -8,16 +11,6 @@ const instance = axios.create({
     'Content-Type': 'application/json',
   }
 })
-
-instance.interceptors.response.use(
-  response => response,
-  error => {
-    if (error.response && error.response.data) {
-      return Promise.reject(error.response.data)
-    }
-    return Promise.reject(error)
-  }
-);
 
 // Đính kèm token vào mọi request
 instance.interceptors.request.use(config => {
@@ -47,6 +40,7 @@ const processQueue = (error: any, token: string | null = null) => {
 instance.interceptors.response.use(
   res => res,
   async error => {
+
     const originalRequest = error.config
 
     // Nếu bị 401 và chưa refresh thì thử refresh
@@ -68,13 +62,11 @@ instance.interceptors.response.use(
 
       try {
         const refreshToken = get_token_storage(KEY_LOCALSTORAGE.refresh_token)
-        const res = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/refresh-token`, {
-          refresh_token: refreshToken
-        })
+        const res = await refresh_token_api({refreshToken: refreshToken as string});
 
-        const accessToken = res.data.access_token
-        const newRefreshToken = res.data.refresh_token
-        auth_store.value.access_token = accessToken;
+        const accessToken = res.data.accessToken
+        const newRefreshToken = res.data.refreshToken
+        auth_store.value.access_token = "Bearer " + accessToken;
         auth_store.value.refresh_token = newRefreshToken;
         instance.defaults.headers.common.Authorization = auth_store.value.access_token
         processQueue(null, accessToken)
@@ -90,6 +82,7 @@ instance.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
 
 const get = async <T>(url: string, config?: AxiosRequestConfig): Promise<T> => {
   const res: AxiosResponse<T> = await instance.get(url, config)
@@ -125,25 +118,3 @@ export const http = {
   delete: del,
   instance
 }
-
-
-export const publicInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  }
-})
-
-
-publicInstance.interceptors.response.use(
-  response => response.data,
-  error => {
-    if (error.response && error.response.data) {
-      return Promise.reject(error.response.data)
-    }
-    return Promise.reject(error)
-  }
-);
-
-export const authHttp = publicInstance
