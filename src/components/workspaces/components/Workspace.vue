@@ -1,5 +1,5 @@
 <template>
-  <template v-if="workspaces.length == 0">
+  <template v-if="workspaces.length == 0 && !isSearch">
     <a-result title="You have no workspace to start. Please contact admin."> </a-result>
   </template>
   <div class="workspace-ctn" v-else>
@@ -10,10 +10,11 @@
         v-model:value="searchTitle"
         placeholder="Search workspaces"
         :loading="false"
+        @keydown.enter="handleSearch"
       />
     </div>
     <!-- list -->
-    <div class="workspace-list">
+    <div class="workspace-list" v-if="workspaces && workspaces.length > 0">
       <div class="workspace-item" v-for="workspace in workspaces" :key="workspace.id">
         <div class="workspace-item__left">
           <div class="workspace-item__left-image">
@@ -28,27 +29,72 @@
         </div>
       </div>
     </div>
+    <div class="workspace-list" v-else>
+      <a-empty />
+    </div>
     <!-- pagination -->
-    <div class="workspace-pagination">
+    <div
+      class="workspace-pagination"
+      v-if="workspaces_metadata && workspaces_metadata?.totalElements > 0"
+    >
       <a-pagination
         v-model:current="current"
         :total="workspaces_metadata?.totalElements"
         show-less-items
+        @change="changePage"
       />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { inject, ref } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import type { Gc as IGc } from '#/Gc'
 
 const Gc = inject('Gc') as typeof IGc
-const { workspaces, workspaces_metadata } = Gc['stores']['workspace_store']
+const { useRouter, useRoute } = Gc['router']
+const { debounce_search } = Gc['modules']['debounce_search']
+const route = useRoute()
+const router = useRouter()
 
+const { workspaces, workspaces_metadata, load_more_workspaces_store, find_workspaces_store } =
+  Gc['stores']['workspace_store']
 const current = ref<number>(workspaces_metadata.value?.currentPage || 1)
-
 const searchTitle = ref<string>('')
+const isSearch = ref<boolean>(false)
+
+const changePage = async (page: number, pageSize: number): Promise<void> => {
+  if (!isSearch) {
+    await load_more_workspaces_store(page)
+  } else {
+    await find_workspaces_store(searchTitle.value, page)
+  }
+  router.push({
+    name: 'workspace',
+    query: {
+      page,
+    },
+  })
+}
+
+onMounted(() => {
+  const page = Number(route.query.page)
+  router.push({
+    name: 'workspace',
+    query: {
+      page: page || 1,
+    },
+  })
+})
+
+const handleSearch = async (): Promise<void> => {
+  await find_workspaces_store(searchTitle.value)
+}
+
+watch(searchTitle, async (newVal) => {
+  isSearch.value = true
+  debounce_search(searchTitle.value, find_workspaces_store, 300)
+})
 </script>
 
 <style scoped>

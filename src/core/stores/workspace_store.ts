@@ -1,13 +1,10 @@
-import { get_list_workspaces_api } from "#/services/workspace_services"
+import { get_list_workspaces_api, find_workspaces_api } from "#/services/workspace_services"
 import type { metadata } from "#/types"
 import type {
-  i_member_workspace,
   i_workspace
 } from "#/types/workspace_types"
 import { ref, computed } from "vue"
 import { auth_store } from "./auth_store"
-
-
 
 export const workspaces = ref<Array<i_workspace>>([])
 export const current_id_workspace = ref<string | undefined>("")
@@ -18,7 +15,31 @@ const KEY_WORKSPACE = "ID_WORKSPACE";
 
 export const init_worskpaces_store = async (): Promise<void> => {
   try {
-    await get_list_workspaces_api(1).then((res) => {
+    const params = new URLSearchParams(window.location.search)
+    const page = Number(params.get('page'))
+    await get_list_workspaces_api(page || 1).then((res) => {
+      workspaces.value = res.data
+      workspaces_metadata.value = res.metadata
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const find_workspaces_store = async (name: string, page: number = 1): Promise<void> => {
+  try {
+    await find_workspaces_api(name, page).then(res => {
+      workspaces.value = res.data
+      workspaces_metadata.value = res.metadata
+    })
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export const load_more_workspaces_store = async (page: number): Promise<void> => {
+  try {
+    await get_list_workspaces_api(page).then((res) => {
       workspaces.value = res.data
       workspaces_metadata.value = res.metadata
     })
