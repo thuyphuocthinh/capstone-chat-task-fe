@@ -1,7 +1,7 @@
 <template>
   <div class="header-ctn">
     <div class="header-left">
-      <div class="header-item workspace-btn">
+      <div class="header-item workspace-btn" @click="router.push(`/workspaces?page=1`)">
         <img src="+/icons/i_workspace.svg" />
       </div>
       <div class="header-item app-name">Slack</div>
@@ -27,7 +27,7 @@
                   <a-menu-item>
                     <a href="javascript:;">Profile</a>
                   </a-menu-item>
-                  <a-menu-item @click="log_out">
+                  <a-menu-item @click="showLogoutConfirm">
                     <a href="javascript:;">Logout</a>
                   </a-menu-item>
                 </a-menu>
@@ -44,6 +44,25 @@
 import { UserOutlined } from '@ant-design/icons-vue'
 import { auth_store } from '#/stores/auth_store'
 import { log_out } from '#/auth'
+import { inject } from 'vue'
+import type { Gc as IGc } from '#/Gc'
+
+const Gc = inject('Gc') as typeof IGc
+const { useConfirm } = Gc['modules']['modal_confirm']
+const { useRouter } = Gc['router']
+const router = useRouter()
+
+const showLogoutConfirm = (): void => {
+  const confirm = useConfirm()
+  confirm({
+    title: 'Do you want to logout?',
+    content: 'Are you sure you want to logout?',
+    onOk: async () => {
+      await log_out()
+    },
+    isDanger: true,
+  })
+}
 </script>
 
 <style scoped>
