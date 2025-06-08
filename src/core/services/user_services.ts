@@ -7,7 +7,7 @@ export const get_profile_api = async (): Promise<i_status_user_response> => {
   try {
     return await http.get(url);
   } catch (e: any) {
-    error_services(e.message);
+    error_services(e.response?.data.message || "Error API");
     throw e
   }
 }

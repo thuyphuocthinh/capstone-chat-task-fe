@@ -93,3 +93,11 @@ export const is_member_workstore = computed((): boolean => {
   }
   return false
 })
+
+
+export const clear_workspaces_store = (): void => {
+  workspaces.value = []
+  current_id_workspace.value = undefined
+  workspaces_metadata.value = undefined
+  current_workspace.value = undefined
+}

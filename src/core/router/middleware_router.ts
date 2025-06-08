@@ -16,8 +16,6 @@ export class middleware_router {
       const publicPaths = ["/login", "/register", "/verify-otp", "/reset-password", "/forgot-password", "/verify-email"]
       const isPublic = publicPaths.includes(to.path)
 
-      console.log(auth_store.value.logged_in)
-
       if (isPublic) {
         if(!auth_store.value.logged_in)
           return true
