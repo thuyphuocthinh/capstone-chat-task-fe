@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import bgImage from '+/img/auth_background.jpg'
 import { reactive, inject, ref } from 'vue'
 import type { i_register } from '#/types/auth_types'
 import type { Gc as IGc } from '#/Gc'
