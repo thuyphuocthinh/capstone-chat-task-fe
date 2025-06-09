@@ -6,7 +6,7 @@ import type { FormInstance } from 'ant-design-vue'
 import { set_noti_mess } from '#/stores/noti_store'
 
 const Gc = inject('Gc') as typeof IGc
-const { register_api } = Gc['services']['auth_services']
+const { change_password_api } = Gc['services']['user_services']
 
 const isLoading = ref<boolean>(false)
 const formRef = ref<FormInstance>()
@@ -26,11 +26,11 @@ const reset = (): void => {
 const onFinish = async (values: i_change_password): Promise<void> => {
   isLoading.value = true
   try {
-    // const res = await register_api(values)
-    // set_noti_mess({
-    //   error: false,
-    //   message: res.message,
-    // })
+    const res = await change_password_api(values)
+    set_noti_mess({
+      error: false,
+      message: res.status,
+    })
     reset()
   } catch (e) {
     console.log(e)
